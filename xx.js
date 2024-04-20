@@ -9,11 +9,13 @@ const dbFilePath = './db.json';
 
 const saveToDatabase = async (data) => {
     try {
-        await fs.writeFile(dbFilePath, JSON.stringify(data, null, 2));
+        await fs.writeFile(dbFilePath, JSON.stringify(data));
     } catch (error) {
         console.error('Veritabanına kaydetme hatası:', error);
+        throw error;
     }
 };
+
 
 const getFromDatabase = async () => {
     try {
