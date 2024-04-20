@@ -71,3 +71,19 @@ app.post('/createkey', async (req, res) => {
 
     res.json({ success: true });
 });
+
+
+app.get('/sa', (req, res) => {
+  // db.json dosyasını oku
+  fs.readFile('db.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Sunucu hatası');
+    }
+
+    // JSON formatından çıkar ve düz metin olarak yanıtla
+    const jsonData = JSON.parse(data);
+    const plainText = JSON.stringify(jsonData, null, 2); // 2 boşluklu formatlama
+    res.type('text/plain').send(plainText);
+  });
+});
