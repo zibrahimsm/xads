@@ -5,9 +5,8 @@ const fs = require('fs');
 const app = express();
 const port = 80;
 
-const dbFilePath = './db.json'; // Veritabanı dosyası
+const dbFilePath = './db.json';
 
-// Anahtar-webhook çiftlerini veritabanına kaydet
 const saveToDatabase = async (data) => {
     try {
         await fs.writeFile(dbFilePath, JSON.stringify(data, null, 2));
@@ -16,7 +15,6 @@ const saveToDatabase = async (data) => {
     }
 };
 
-// Anahtar-webhook çiftlerini veritabanından al
 const getFromDatabase = async () => {
     try {
         const data = await fs.readFile(dbFilePath);
@@ -29,25 +27,20 @@ const getFromDatabase = async () => {
 
 let jsonData;
 
-// JSON dosyasını oku
-fs.readFile('db.json', 'utf8', (err, data) => {
+fs.readFile(dbFilePath, 'utf8', (err, data) => {
     if (err) {
         console.error('JSON dosyası okunurken bir hata oluştu:', err);
         return;
     }
     jsonData = JSON.parse(data);
 
-    // Sunucuyu belirtilen portta başlat
     app.listen(port, () => {
         console.log(`Sunucu çalışıyor: http://localhost:${port}`);
-        keys =  getFromDatabase();
     });
 });
 
-// JSON verisi analiz ediciyi ayarla
 app.use(bodyParser.json());
 
-// Anahtarın girildiğini kontrol eden endpoint
 app.post('/', (req, res) => {
     const key = req.body.key;
 
@@ -56,7 +49,6 @@ app.post('/', (req, res) => {
         return;
     }
 
-    // Anahtarı JSON dosyasında kontrol et
     const webhook = jsonData[key];
 
     if (webhook) {
@@ -65,10 +57,7 @@ app.post('/', (req, res) => {
         res.status(404).send('Anahtar bulunamadı.');
     }
 });
-////
 
-
-// Anahtar oluşturma endpoint'i
 app.post('/createkey', async (req, res) => {
     const { key, webhook } = req.body;
 
@@ -76,11 +65,9 @@ app.post('/createkey', async (req, res) => {
         return res.status(400).json({ error: 'Anahtar ve Webhook gereklidir.' });
     }
 
-    keys[key] = webhook;
+    jsonData[key] = webhook;
 
-    // Veritabanına kaydet
-     saveToDatabase(keys);
+    saveToDatabase(jsonData);
 
     res.json({ success: true });
 });
-
