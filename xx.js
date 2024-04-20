@@ -40,7 +40,7 @@ fs.readFile('db.json', 'utf8', (err, data) => {
     // Sunucuyu belirtilen portta başlat
     app.listen(port, () => {
         console.log(`Sunucu çalışıyor: http://localhost:${port}`);
-        keys = await getFromDatabase();
+        keys =  getFromDatabase();
     });
 });
 
@@ -79,7 +79,7 @@ app.post('/createkey', async (req, res) => {
     keys[key] = webhook;
 
     // Veritabanına kaydet
-    await saveToDatabase(keys);
+     saveToDatabase(keys);
 
     res.json({ success: true });
 });
